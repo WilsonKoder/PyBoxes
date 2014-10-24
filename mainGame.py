@@ -59,6 +59,7 @@ while running:
 
         if event.type == pygame.KEYDOWN:  # check for keyboard input
             if event.key == pygame.K_c:  # clear the screen
+                space.remove(circles)
                 circles = []
             if event.key == pygame.K_w:  # increase size of ball
                 rad += 5
@@ -69,8 +70,8 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONDOWN: # check if the mouse is clicked
             pos = pygame.mouse.get_pos()  # get the mouse pos
-            # real_pos = pos[0], pos[1] - I need to use this to get the actual position, not so easy ;-)
-            new_circle = create_circle(pos)  # create a circle object
+            real_pos = pymunk.pygame_util.to_pygame(pos, screen)
+            new_circle = create_circle(real_pos)  # create a circle object
             circles.append(new_circle)  # add it to the list
 
     screen.fill(white)  # clear the screen
