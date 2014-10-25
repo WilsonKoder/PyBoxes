@@ -46,6 +46,8 @@ E - Increase gravity
 
 D - Decrease gravity
 
+R - Turn on hold down mouse mode
+
 C - Clear screen
 
 F - Turn on debug info
