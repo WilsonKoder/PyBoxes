@@ -103,15 +103,19 @@ while running:
         p_circle = int(circle.body.position.x), 600-int(circle.body.position.y)  # render each circle in the list
         pygame.draw.circle(screen, blue, p_circle, int(circle.radius), 2)  # render each circle in the list
 
-    debugTextCount = arial.render("Circle Count = " + str(len(circles)), 1,  black, None)
-    debugTextRad = arial.render("Radius = " + str(rad), 1,  black, None)
-    debugTextElasticity = arial.render("Elasticity = " + str(ball_elasticity), 1,  black, None)
+    debugTextCount = arial.render("Circle Count = " + str(len(circles)), 1,  black, None)  # count of circles
+    debugTextRad = arial.render("Radius = " + str(rad), 1,  black, None)  # radius text
+    debugTextElasticity = arial.render("Elasticity = " + str(ball_elasticity), 1,  black, None)  # bounciness text
+    debugTextMousePos = arial.render("Mouse Pos = " + str(pygame.mouse.get_pos()), 1, black, None)  # mouse pos text
+    debugTextFPS = arial.render("FPS = " + str(round(clock.get_fps(), 1)), 1, black, None)  # fps text, one decimal point
 
-
+    #if you're in debug mode, draw text.
     if debugging:
         screen.blit(debugTextCount, (0, 0))
         screen.blit(debugTextRad, (0, 30))
         screen.blit(debugTextElasticity, (0, 60))
+        screen.blit(debugTextMousePos, (0, 90))
+        screen.blit(debugTextFPS, (0, 120))
 
     pygame.display.flip()  # draw everything
     clock.tick(60)  # limit fps :)
