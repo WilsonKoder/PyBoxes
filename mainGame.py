@@ -12,6 +12,7 @@ import time
 
 white = 255, 255, 255
 black = 0, 0, 0
+red = 255, 0, 0
 green = 0, 255, 0
 blue = 0, 0, 255
 
@@ -135,7 +136,7 @@ while running:
 
     for circle in circles:
         p_circle = int(circle.body.position.x), 600-int(circle.body.position.y)  # render each circle in the list
-        pygame.draw.circle(screen, blue, p_circle, int(circle.radius), 2)  # render each circle in the list
+        pygame.draw.circle(screen, red, p_circle, int(circle.radius), 0)  # render each circle in the list
 
     debugTextCount = arial.render("Circle Count = " + str(len(circles)), 1,  black, None)  # count of circles
     debugTextRad = arial.render("Radius = " + str(rad), 1,  black, None)  # radius text
