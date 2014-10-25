@@ -16,7 +16,7 @@ blue = 0, 0, 255
 pygame.init()
 window_size = (800, 600)
 screen = pygame.display.set_mode(window_size)
-pygame.display.set_caption("PyBoxes v0.2")
+pygame.display.set_caption("PyBoxes v0.3")
 clock = pygame.time.Clock()
 
 space = pymunk.Space()
@@ -24,6 +24,7 @@ space.gravity = (0.0, -900.0)
 
 circle_count = 0
 rad = 14
+elasticity = 0.8
 
 running = True
 
@@ -34,7 +35,7 @@ def create_circle(position):
     body.position = position
     #body.position = position
     shape = pymunk.Circle(body, rad)
-    shape.elasticity = 0.8
+    shape.elasticity = elasticity
     space.add(body, shape)
     return shape
 
@@ -43,7 +44,7 @@ def create_line(Space):
     body = pymunk.Body()
     body.position = (400, 600)
     line_shape = pymunk.Segment(body, (-400, -500), (400, -500), 15)
-    line_shape.elasticity = 1
+    line_shape.elasticity = 0.5
     Space.add(line_shape)
     return line_shape
 
@@ -67,6 +68,15 @@ while running:
                 #must check if above 5 so it doesnt throw an error if you go below 0 :p
                 if rad > 5:
                     rad -= 5
+                else:
+                    print("rad is too low to decrease even more.")
+            if event.key == pygame.K_UP:
+                elasticity += 0.25
+            if event.key == pygame.K_DOWN:
+                if elasticity > 0.5:
+                    elasticity -= 0.25
+                else:
+                    print("e is to low to decrease even more.")
 
         if event.type == pygame.MOUSEBUTTONDOWN: # check if the mouse is clicked
             pos = pygame.mouse.get_pos()  # get the mouse pos
