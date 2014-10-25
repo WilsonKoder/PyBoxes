@@ -38,6 +38,10 @@ W - Increase circle radius
 
 S - Decrease circle radius
 
+Up arrow - Increase Bounciness
+
+Down arrow - Decrease bounciness
+
 C - Clear screen
 
 Mouse Click - Instantiate circle
