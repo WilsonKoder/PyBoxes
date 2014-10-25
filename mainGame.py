@@ -10,6 +10,7 @@ import pymunk.pygame_util
 import sys
 
 white = 255, 255, 255
+black = 0, 0, 0
 green = 0, 255, 0
 blue = 0, 0, 255
 
@@ -24,9 +25,10 @@ space.gravity = (0.0, -900.0)
 
 circle_count = 0
 rad = 14
-elasticity = 0.8
+ball_elasticity = 0.8
 
 running = True
+debugging = False
 
 def create_circle(position):
     mass = 1
@@ -35,7 +37,7 @@ def create_circle(position):
     body.position = position
     #body.position = position
     shape = pymunk.Circle(body, rad)
-    shape.elasticity = elasticity
+    shape.elasticity = ball_elasticity
     space.add(body, shape)
     return shape
 
@@ -51,6 +53,8 @@ def create_line(Space):
 line = create_line(space)
 line.color = blue
 circles = []
+
+arial = pygame.font.SysFont("Arial", 24)
 
 while running:
     for event in pygame.event.get():  # go through every event that frame.
@@ -71,12 +75,17 @@ while running:
                 else:
                     print("rad is too low to decrease even more.")
             if event.key == pygame.K_UP:
-                elasticity += 0.25
+                ball_elasticity += 0.25
             if event.key == pygame.K_DOWN:
-                if elasticity > 0.5:
-                    elasticity -= 0.25
+                if ball_elasticity > 0.5:
+                    ball_elasticity -= 0.25
                 else:
                     print("e is to low to decrease even more.")
+            if event.key == pygame.K_f:
+                if debugging:
+                    debugging = False
+                else:
+                    debugging = True
 
         if event.type == pygame.MOUSEBUTTONDOWN: # check if the mouse is clicked
             pos = pygame.mouse.get_pos()  # get the mouse pos
@@ -93,6 +102,16 @@ while running:
     for circle in circles:
         p_circle = int(circle.body.position.x), 600-int(circle.body.position.y)  # render each circle in the list
         pygame.draw.circle(screen, blue, p_circle, int(circle.radius), 2)  # render each circle in the list
+
+    debugTextCount = arial.render("Circle Count = " + str(len(circles)), 1,  black, None)
+    debugTextRad = arial.render("Radius = " + str(rad), 1,  black, None)
+    debugTextElasticity = arial.render("Elasticity = " + str(ball_elasticity), 1,  black, None)
+
+
+    if debugging:
+        screen.blit(debugTextCount, (0, 0))
+        screen.blit(debugTextRad, (0, 30))
+        screen.blit(debugTextElasticity, (0, 60))
 
     pygame.display.flip()  # draw everything
     clock.tick(60)  # limit fps :)
