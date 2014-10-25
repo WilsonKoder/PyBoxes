@@ -8,6 +8,7 @@ import pymunk
 import pygame
 import pymunk.pygame_util
 import sys
+import time
 
 white = 255, 255, 255
 black = 0, 0, 0
@@ -19,6 +20,8 @@ window_size = (800, 600)
 screen = pygame.display.set_mode(window_size)
 pygame.display.set_caption("PyBoxes v0.3")
 clock = pygame.time.Clock()
+start_time = time.time()
+play_time = 0
 
 space = pymunk.Space()
 space.gravity = (0.0, -900.0)
@@ -100,6 +103,9 @@ while running:
             new_circle = create_circle(real_pos)  # create a circle object
             circles.append(new_circle)  # add it to the list
 
+
+    play_time = round(time.time() - start_time, 1)
+
     screen.fill(white)  # clear the screen
 
     space.step(1 / 60.0)  # step
@@ -116,6 +122,7 @@ while running:
     debugTextMousePos = arial.render("Mouse Pos = " + str(pygame.mouse.get_pos()), 1, black, None)  # mouse pos text
     debugTextFPS = arial.render("FPS = " + str(round(clock.get_fps(), 1)), 1, black, None)  # fps text, one decimal point
     debugTextGravity = arial.render("Gravity = " + str(gravity), 1, black, None)  # gravity text
+    debugTextTime = arial.render("Play Time = " + str(play_time), 1, black, None)
 
     #if you're in debug mode, draw text.
     if debugging:
@@ -125,6 +132,7 @@ while running:
         screen.blit(debugTextMousePos, (0, 90))
         screen.blit(debugTextFPS, (0, 120))
         screen.blit(debugTextGravity, (0, 150))
+        screen.blit(debugTextTime, (0, 180))
 
     pygame.display.flip()  # draw everything
     clock.tick(60)  # limit fps :)
