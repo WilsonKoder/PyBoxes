@@ -104,7 +104,7 @@ while running:
             circles.append(new_circle)  # add it to the list
 
 
-    play_time = round(time.time() - start_time, 1)
+    play_time = round(time.time() - start_time, 0)
 
     screen.fill(white)  # clear the screen
 
