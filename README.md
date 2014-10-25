@@ -44,6 +44,8 @@ Down arrow - Decrease bounciness
 
 C - Clear screen
 
+F - Turn on debug info
+
 Mouse Click - Instantiate circle
 
 Lisence
