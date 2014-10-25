@@ -42,6 +42,10 @@ Up arrow - Increase Bounciness
 
 Down arrow - Decrease bounciness
 
+E - Increase gravity
+
+D - Decrease gravity
+
 C - Clear screen
 
 F - Turn on debug info
