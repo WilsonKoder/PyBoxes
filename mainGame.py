@@ -30,6 +30,8 @@ circle_count = 0
 rad = 14
 ball_elasticity = 0.8
 gravity = -900
+mouse_down = False
+hold_down_mouse = False
 
 running = True
 debugging = False
@@ -79,10 +81,10 @@ while running:
                 else:
                     print("rad is too low to decrease even more.")
             if event.key == pygame.K_e:
-                gravity += 200
+                gravity += 100
                 space.gravity = (0.0, gravity)
             if event.key == pygame.K_d:
-                gravity -= 200
+                gravity -= 100
                 space.gravity = (0.0, gravity)
             if event.key == pygame.K_UP:
                 ball_elasticity += 0.25
@@ -91,17 +93,36 @@ while running:
                     ball_elasticity -= 0.25
                 else:
                     print("e is to low to decrease even more.")
+            if event.key == pygame.K_r:
+                if hold_down_mouse:
+                    hold_down_mouse = False
+                else:
+                    hold_down_mouse = True
+
             if event.key == pygame.K_f:
                 if debugging:
                     debugging = False
                 else:
                     debugging = True
 
-        if event.type == pygame.MOUSEBUTTONDOWN: # check if the mouse is clicked
-            pos = pygame.mouse.get_pos()  # get the mouse pos
-            real_pos = pymunk.pygame_util.to_pygame(pos, screen)
-            new_circle = create_circle(real_pos)  # create a circle object
-            circles.append(new_circle)  # add it to the list
+        if event.type == pygame.MOUSEBUTTONDOWN:  # check if the mouse is clicked
+            if hold_down_mouse:
+                mouse_down = True
+            else:
+                pos = pygame.mouse.get_pos()  # get the mouse pos
+                real_pos = pymunk.pygame_util.to_pygame(pos, screen)
+                new_circle = create_circle(real_pos)  # create a circle object
+                circles.append(new_circle)  # add it to the list
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            if hold_down_mouse:
+                mouse_down = False
+
+    if mouse_down:
+        pos = pygame.mouse.get_pos()  # get the mouse pos
+        real_pos = pymunk.pygame_util.to_pygame(pos, screen)
+        new_circle = create_circle(real_pos)  # create a circle object
+        circles.append(new_circle)  # add it to the list
 
 
     play_time = round(time.time() - start_time, 0)
