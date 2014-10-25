@@ -26,6 +26,7 @@ space.gravity = (0.0, -900.0)
 circle_count = 0
 rad = 14
 ball_elasticity = 0.8
+gravity = -900
 
 running = True
 debugging = False
@@ -74,6 +75,12 @@ while running:
                     rad -= 5
                 else:
                     print("rad is too low to decrease even more.")
+            if event.key == pygame.K_e:
+                gravity += 200
+                space.gravity = (0.0, gravity)
+            if event.key == pygame.K_d:
+                gravity -= 200
+                space.gravity = (0.0, gravity)
             if event.key == pygame.K_UP:
                 ball_elasticity += 0.25
             if event.key == pygame.K_DOWN:
@@ -108,6 +115,7 @@ while running:
     debugTextElasticity = arial.render("Elasticity = " + str(ball_elasticity), 1,  black, None)  # bounciness text
     debugTextMousePos = arial.render("Mouse Pos = " + str(pygame.mouse.get_pos()), 1, black, None)  # mouse pos text
     debugTextFPS = arial.render("FPS = " + str(round(clock.get_fps(), 1)), 1, black, None)  # fps text, one decimal point
+    debugTextGravity = arial.render("Gravity = " + str(gravity), 1, black, None)  # gravity text
 
     #if you're in debug mode, draw text.
     if debugging:
@@ -116,6 +124,7 @@ while running:
         screen.blit(debugTextElasticity, (0, 60))
         screen.blit(debugTextMousePos, (0, 90))
         screen.blit(debugTextFPS, (0, 120))
+        screen.blit(debugTextGravity, (0, 150))
 
     pygame.display.flip()  # draw everything
     clock.tick(60)  # limit fps :)
