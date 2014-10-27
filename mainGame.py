@@ -6,6 +6,7 @@ __author__ = 'Wilson Koder'
 
 import pymunk
 import pygame
+import pygame.gfxdraw
 import pymunk.pygame_util
 import sys
 import time
@@ -136,7 +137,8 @@ while running:
 
     for circle in circles:
         p_circle = int(circle.body.position.x), 600-int(circle.body.position.y)  # render each circle in the list
-        pygame.draw.circle(screen, red, p_circle, int(circle.radius), 0)  # render each circle in the list
+        #pygame.draw.circle(screen, red, p_circle, int(circle.radius), 0)  # render each circle in the list
+        pygame.gfxdraw.aacircle(screen, p_circle[0], p_circle[1], int(circle.radius), red)
 
     debugTextCount = arial.render("Circle Count = " + str(len(circles)), 1,  black, None)  # count of circles
     debugTextRad = arial.render("Radius = " + str(rad), 1,  black, None)  # radius text
