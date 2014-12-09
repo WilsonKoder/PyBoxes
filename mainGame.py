@@ -27,7 +27,7 @@ play_time = 0
  
 space = pymunk.Space()
 space.gravity = (0.0, -900.0)
- 
+
 circle_count = 0
 rad = 14
 ball_elasticity = 0.8
@@ -91,9 +91,11 @@ while running:
                 if liquid_sim is False:
                     liquid_sim = True
                     rad = 1
+                    ball_elasticity = 0.2
                 else:
                     liquid_sim = False
                     rad = 4
+                    ball_elasticity = 0.8
             if event.key == pygame.K_d:
                 gravity -= 100
                 space.gravity = (0.0, gravity)
@@ -130,11 +132,23 @@ while running:
                 mouse_down = False
  
     if mouse_down:
-        pos = pygame.mouse.get_pos()  # get the mouse pos
-        real_pos = pymunk.pygame_util.to_pygame(pos, screen)
-        new_circle = create_circle(real_pos)  # create a circle object
-        circles.append(new_circle)  # add it to the list
- 
+        if liquid_sim:
+            pos = pygame.mouse.get_pos()  # get the mouse pos
+            real_pos = pymunk.pygame_util.to_pygame(pos, screen)
+            new_circle = create_circle(real_pos)  # create a circle object
+            circles.append(new_circle)  # add it to the list
+            pos = pygame.mouse.get_pos()  # get the mouse pos
+            real_pos = pymunk.pygame_util.to_pygame(pos, screen)
+            new_circle = create_circle(real_pos)  # create a circle object
+            circles.append(new_circle)  # add it to the list
+        else:
+            pos = pygame.mouse.get_pos()  # get the mouse pos
+            real_pos = pymunk.pygame_util.to_pygame(pos, screen)
+            new_circle = create_circle(real_pos)  # create a circle object
+            circles.append(new_circle)  # add it to the list
+
+    if rad != 1 and liquid_sim is True:
+        liquid_sim = False
  
     play_time = round(time.time() - start_time, 0)
  
@@ -159,7 +173,7 @@ while running:
     debugTextMousePos = arial.render("Mouse Pos = " + str(pygame.mouse.get_pos()), 1, black, None)  # mouse pos text
     debugTextFPS = arial.render("FPS = " + str(round(clock.get_fps(), 1)), 1, black, None)  # fps text, one decimal point
     debugTextGravity = arial.render("Gravity = " + str(gravity), 1, black, None)  # gravity text
-    debugTextTime = arial.render("Play Time = " + str(play_time), 1, black, None)
+    debugTextTime = arial.render("Play Time = " + str(int(play_time)) + " Seconds", 1, black, None)
     if liquid_sim:
         debugLiquidSim = arial.render("Liquid Simulation On", 1, black, None)
     elif not liquid_sim:
@@ -178,5 +192,6 @@ while running:
  
     pygame.display.flip()  # draw everything
     clock.tick(60)  # limit fps :)
- 
+
+print("Congrats! You just wasted " + str(int(play_time)) + " seconds of your life!")
 sys.exit()  # quit if the user is no longer running the application.
