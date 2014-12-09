@@ -39,25 +39,26 @@ running = True
 debugging = False
  
 liquid_sim = False
- 
+
+
 def create_circle(position):
     mass = 1
     inertia = pymunk.moment_for_circle(mass, 0, rad)
     body = pymunk.Body(mass, inertia)
     body.position = position
-    #body.position = position
+    # body.position = position
     shape = pymunk.Circle(body, rad)
     shape.elasticity = ball_elasticity
     space.add(body, shape)
     return shape
  
  
-def create_line(Space):
+def create_line(space_temp):
     body = pymunk.Body()
     body.position = (400, 600)
     line_shape = pymunk.Segment(body, (-400, -500), (400, -500), 15)
     line_shape.elasticity = 0.5
-    Space.add(line_shape)
+    space_temp.add(line_shape)
     return line_shape
  
 line = create_line(space)
@@ -79,7 +80,7 @@ while running:
             if event.key == pygame.K_w:  # increase size of ball
                 rad += 5
             if event.key == pygame.K_s:  # decrease size of ball
-                #must check if above 5 so it doesnt throw an error if you go below 0 :p
+                # must check if above 5 so it doesnt throw an error if you go below 0 :p
                 if rad > 5:
                     rad -= 5
                 else:
@@ -165,19 +166,20 @@ while running:
         pygame.gfxdraw.aacircle(screen, p_circle[0], p_circle[1], int(circle.radius), red)
         if p_circle[0] > 815 or p_circle[0] < -15:
             circles.remove(circle)
- 
- 
+
     debugTextCount = arial.render("Circle Count = " + str(len(circles)), 1,  black, None)  # count of circles
     debugTextRad = arial.render("Radius = " + str(rad), 1,  black, None)  # radius text
     debugTextElasticity = arial.render("Elasticity = " + str(ball_elasticity), 1,  black, None)  # bounciness text
     debugTextMousePos = arial.render("Mouse Pos = " + str(pygame.mouse.get_pos()), 1, black, None)  # mouse pos text
-    debugTextFPS = arial.render("FPS = " + str(round(clock.get_fps(), 1)), 1, black, None)  # fps text, one decimal point
-    debugTextGravity = arial.render("Gravity = " + str(gravity), 1, black, None)  # gravity text
+    debugTextFPS = arial.render("FPS = " + str(round(clock.get_fps(), 1)), 1, black, None)  # fps text
+    debugTextGravity = arial.render("Gravity = " + str(gravity), 1, black, None)  # gravity text to one d.p.
     debugTextTime = arial.render("Play Time = " + str(int(play_time)) + " Seconds", 1, black, None)
     if liquid_sim:
         debugLiquidSim = arial.render("Liquid Simulation On", 1, black, None)
     elif not liquid_sim:
         debugLiquidSim = arial.render("Liquid Simulation Off", 1, black, None)
+    else:
+        debugLiquidSim = arial.render("WAAAAAHHHHHTTTT?!?!?", 1, black, None)
        
     # if you're in debug mode, draw text.
     if debugging:
