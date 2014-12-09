@@ -24,7 +24,7 @@ pygame.display.set_caption("PyBoxes v0.3")
 clock = pygame.time.Clock()
 start_time = time.time()
 play_time = 0
- 
+
 space = pymunk.Space()
 space.gravity = (0.0, -900.0)
 
@@ -41,6 +41,8 @@ debugging = False
 liquid_sim = False
 
 
+friction = 0.8
+
 def create_circle(position):
     mass = 1
     inertia = pymunk.moment_for_circle(mass, 0, rad)
@@ -49,6 +51,7 @@ def create_circle(position):
     # body.position = position
     shape = pymunk.Circle(body, rad)
     shape.elasticity = ball_elasticity
+    shape.friction = friction
     space.add(body, shape)
     return shape
  
@@ -90,10 +93,12 @@ while running:
                 space.gravity = (0.0, gravity)
             if event.key == pygame.K_l:
                 if liquid_sim is False:
+                    friction = 0.05
                     liquid_sim = True
-                    rad = 1
-                    ball_elasticity = 0.2
+                    rad = 2
+                    ball_elasticity = 0.5
                 else:
+                    friction = 0.8
                     liquid_sim = False
                     rad = 4
                     ball_elasticity = 0.8
@@ -134,27 +139,23 @@ while running:
  
     if mouse_down:
         if liquid_sim:
-            pos = pygame.mouse.get_pos()  # get the mouse pos
-            real_pos = pymunk.pygame_util.to_pygame(pos, screen)
-            new_circle = create_circle(real_pos)  # create a circle object
-            circles.append(new_circle)  # add it to the list
-            pos = pygame.mouse.get_pos()  # get the mouse pos
-            real_pos = pymunk.pygame_util.to_pygame(pos, screen)
-            new_circle = create_circle(real_pos)  # create a circle object
-            circles.append(new_circle)  # add it to the list
+            for i in range(0, 20):
+                pos = pygame.mouse.get_pos()  # get the mouse pos
+                real_pos = pymunk.pygame_util.to_pygame(pos, screen)
+                new_circle = create_circle(real_pos)  # create a circle object
+                circles.append(new_circle)  # add it to the list
         else:
             pos = pygame.mouse.get_pos()  # get the mouse pos
             real_pos = pymunk.pygame_util.to_pygame(pos, screen)
             new_circle = create_circle(real_pos)  # create a circle object
             circles.append(new_circle)  # add it to the list
 
-    if rad != 1 and liquid_sim is True:
+    if rad != 2 and liquid_sim is True:
         liquid_sim = False
  
     play_time = round(time.time() - start_time, 0)
  
     screen.fill(white)  # clear the screen
- 
     space.step(1 / 60.0)  # step
  
     pymunk.pygame_util.draw(screen, line)  # draw the floor, couldn't get it working with normal pygame, so using util's
@@ -165,6 +166,7 @@ while running:
  
         pygame.gfxdraw.aacircle(screen, p_circle[0], p_circle[1], int(circle.radius), red)
         if p_circle[0] > 815 or p_circle[0] < -15:
+            space.remove(circle)
             circles.remove(circle)
 
     debugTextCount = arial.render("Circle Count = " + str(len(circles)), 1,  black, None)  # count of circles
