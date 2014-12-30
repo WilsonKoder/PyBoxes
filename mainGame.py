@@ -73,6 +73,9 @@ def create_line(space_temp):
 line = create_line(space)
 line.color = blue
 circles = []
+
+inTextBox = False
+command = ""
  
 arial = pygame.font.SysFont("Arial", 24)
  
@@ -82,95 +85,114 @@ while running:
             running = False  # if the user tries to quit the app, set running to false in order to exit the loop
  
         if event.type == pygame.KEYDOWN:  # check for keyboard input
-            if event.key == pygame.K_p:
-                if not paused:
-                    print("pausing")
-                    paused = True
-                elif paused:
-                    paused = False
-            if event.key == pygame.K_n:
-                newRad = input("Please input a new radius (int): ")
-                try:
-                    rad = int(newRad)
-                except ValueError:
-                    print(str(newRad) + " is not an int. Please input an integer next time.")
-            if event.key == pygame.K_g:
-                newColor = input("Please choose a new color (green, red, blue, yellow): ")
-                if newColor.lower() == "green":
-                    color = green
-                elif newColor.lower() == "yellow":
-                    color = yellow
-                elif newColor.lower() == "red":
-                    color = red
-                elif newColor == "blue":
-                    color = blue
-                else:
-                    print(newColor + " is not a color from the list... Press g to choose again.")
-            if event.key == pygame.K_c:  # clear the screen
-                space.remove(circles)
-                circles = []
-            if event.key == pygame.K_x:
-                space.remove(liquid_particles)
-                liquid_particles = []
-            if event.key == pygame.K_a:
-                wind -= 100
-            if event.key == pygame.K_q:
-                wind += 100
-            if event.key == pygame.K_w:  # increase size of ball
-                rad += 5
-            if event.key == pygame.K_s:  # decrease size of ball
-                # must check if above 5 so it doesnt throw an error if you go below 0 :p
-                if rad > 5:
-                    rad -= 5
-                else:
-                    print("rad is too low to decrease even more.")
-            if event.key == pygame.K_e:
-                gravity += 100
-            if event.key == pygame.K_l:
-                if liquid_sim is False:
-                    friction = 0.0
-                    liquid_sim = True
-                    rad = liquid_rad
-                    ball_elasticity = 0.5
-                else:
-                    friction = 0.8
-                    liquid_sim = False
-                    rad = 4
-                    ball_elasticity = 0.8
-            if event.key == pygame.K_d:
-                gravity -= 100
-            if event.key == pygame.K_UP:
-                ball_elasticity += 0.25
-            if event.key == pygame.K_DOWN:
-                if ball_elasticity > 0.5:
-                    ball_elasticity -= 0.25
-                else:
-                    print("e is to low to decrease even more.")
-            if event.key == pygame.K_r:
-                if hold_down_mouse:
-                    hold_down_mouse = False
-                else:
-                    hold_down_mouse = True
- 
-            if event.key == pygame.K_f:
-                if debugging:
-                    debugging = False
-                else:
-                    debugging = True
+
+            if inTextBox and event.key != pygame.K_RETURN:
+                key = pygame.key.name(event.key)
+                if key != "space" or "backspace":
+                    command += pygame.key.name(event.key)
+            else:
+
+                if event.key == pygame.K_RETURN:
+                    if inTextBox:
+                        exec(command)
+                        command = ""
+                        inTextBox = False
+                if not inTextBox:
+                    if event.key == pygame.K_p:
+                        if not paused:
+                            print("pausing")
+                            paused = True
+                        elif paused:
+                            paused = False
+                    if event.key == pygame.K_n:
+                        newRad = input("Please input a new radius (int): ")
+                        try:
+                            rad = int(newRad)
+                        except ValueError:
+                            print(str(newRad) + " is not an int. Please input an integer next time.")
+                    if event.key == pygame.K_g:
+                        newColor = input("Please choose a new color (green, red, blue, yellow): ")
+                        if newColor.lower() == "green":
+                            color = green
+                        elif newColor.lower() == "yellow":
+                            color = yellow
+                        elif newColor.lower() == "red":
+                            color = red
+                        elif newColor == "blue":
+                            color = blue
+                        else:
+                            print(newColor + " is not a color from the list... Press g to choose again.")
+                    if event.key == pygame.K_c:  # clear the screen
+                        space.remove(circles)
+                        circles = []
+                    if event.key == pygame.K_x:
+                        space.remove(liquid_particles)
+                        liquid_particles = []
+                    if event.key == pygame.K_a:
+                        wind -= 100
+                    if event.key == pygame.K_q:
+                        wind += 100
+                    if event.key == pygame.K_w:  # increase size of ball
+                        rad += 5
+                    if event.key == pygame.K_s:  # decrease size of ball
+                        # must check if above 5 so it doesnt throw an error if you go below 0 :p
+                        if rad > 5:
+                            rad -= 5
+                        else:
+                            print("rad is too low to decrease even more.")
+                    if event.key == pygame.K_e:
+                        gravity += 100
+                    if event.key == pygame.K_l:
+                        if liquid_sim is False:
+                            friction = 0.0
+                            liquid_sim = True
+                            rad = liquid_rad
+                            ball_elasticity = 0.5
+                        else:
+                            friction = 0.8
+                            liquid_sim = False
+                            rad = 4
+                            ball_elasticity = 0.8
+                    if event.key == pygame.K_d:
+                        gravity -= 100
+                    if event.key == pygame.K_UP:
+                        ball_elasticity += 0.25
+                    if event.key == pygame.K_DOWN:
+                        if ball_elasticity > 0.5:
+                            ball_elasticity -= 0.25
+                        else:
+                            print("e is to low to decrease even more.")
+                    if event.key == pygame.K_r:
+                        if hold_down_mouse:
+                            hold_down_mouse = False
+                        else:
+                            hold_down_mouse = True
+
+                    if event.key == pygame.K_f:
+                        if debugging:
+                            debugging = False
+                        else:
+                            debugging = True
  
         if event.type == pygame.MOUSEBUTTONDOWN:  # check if the mouse is clicked
-            if hold_down_mouse:
-                mouse_down = True
+            pos = pygame.mouse.get_pos()
+
+            if pos[0] > 600 and pos[1] < 50:
+                print("clicked in textbox")
+                inTextBox = True
             else:
-                pos = pygame.mouse.get_pos()
-                if pos[1] < 500:
-                    pos = pygame.mouse.get_pos()  # get the mouse pos
-                    real_pos = pymunk.pygame_util.to_pygame(pos, screen)
-                    new_circle = create_circle(real_pos)  # create a circle object
-                    if not liquid_sim:
-                        circles.append(new_circle)  # add it to the list
-                    else:
-                        liquid_particles.append(new_circle)
+                if hold_down_mouse:
+                    mouse_down = True
+                else:
+                    pos = pygame.mouse.get_pos()
+                    if pos[1] < 500:
+                        pos = pygame.mouse.get_pos()  # get the mouse pos
+                        real_pos = pymunk.pygame_util.to_pygame(pos, screen)
+                        new_circle = create_circle(real_pos)  # create a circle object
+                        if not liquid_sim:
+                            circles.append(new_circle)  # add it to the list
+                        else:
+                            liquid_particles.append(new_circle)
  
         if event.type == pygame.MOUSEBUTTONUP:
             if hold_down_mouse:
@@ -206,9 +228,9 @@ while running:
  
     for circle in circles:
         try:
-            p_circle = int(circle.body.position.x), 600-int(circle.body.position.y)  # render each circle in the list
+            p_circle = int(circle.body.position.x), 600 - int(circle.body.position.y)  # render each circle in the list
             # pygame.draw.circle(screen, red, p_circle, int(circle.radius), 0)  # render each circle in the list
- 
+
             pygame.gfxdraw.aacircle(screen, p_circle[0], p_circle[1], int(circle.radius), color)
             if p_circle[0] > (800 + circle.radius) or p_circle[0] < -circle.radius:
                 space.remove(circle)
@@ -223,7 +245,6 @@ while running:
         for particle in liquid_particles:
             try:
                 p_circle = int(particle.body.position.x), 600-int(particle.body.position.y)  # render each circle in the list
-                # pygame.draw.circle(screen, red, p_circle, int(circle.radius), 0)  # render each circle in the list
 
                 pygame.gfxdraw.aacircle(screen, p_circle[0], p_circle[1], int(particle.radius), color)
                 if p_circle[0] > (800 + particle.radius) or p_circle[0] < -particle.radius:
@@ -236,8 +257,15 @@ while running:
                 space.remove(liquid_particles)
                 liquid_particles = []
 
+    # pymunk.pygame_util.draw(screen, circles)
+    # pymunk.pygame_util.draw(screen, liquid_particles)
+
     mousePos = pygame.mouse.get_pos()
     pygame.gfxdraw.aacircle(screen, mousePos[0], mousePos[1], rad, black)
+
+    if inTextBox:
+        commandText = arial.render(command, 1, black, None)
+        screen.blit(commandText, (600, 30))
 
     # if you're in debug mode, set text then draw text.
     if debugging:
@@ -267,6 +295,7 @@ while running:
         screen.blit(debugLiquidSim, (0, 210))
         screen.blit(debugTextWind, (0, 240))
         screen.blit(debugTextParticleCount, (0, 270))
+
 
     pygame.display.flip()  # draw everything
     clock.tick(60)  # limit fps :)
