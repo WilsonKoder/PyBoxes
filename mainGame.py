@@ -18,6 +18,8 @@ green = 0, 255, 0
 blue = 0, 0, 255
 yellow = 255, 255, 0
 
+allowedKeys = "abcdefghijklmnopqrstuvwxyz=\"\'1234567890()"
+
 pygame.init()
 window_size = (800, 600)
 screen = pygame.display.set_mode(window_size)
@@ -85,16 +87,22 @@ while running:
             running = False  # if the user tries to quit the app, set running to false in order to exit the loop
  
         if event.type == pygame.KEYDOWN:  # check for keyboard input
-
             if inTextBox and event.key != pygame.K_RETURN:
                 key = pygame.key.name(event.key)
-                if key != "space" or "backspace":
+                if key == "backspace":
+                    command = command[:-1]
+                elif key not in allowedKeys:
+                    print("key not allowed")
+                else:
                     command += pygame.key.name(event.key)
             else:
-
                 if event.key == pygame.K_RETURN:
                     if inTextBox:
-                        exec(command)
+                        if command != "clear":
+                            exec(command)
+                        else:
+                            space.remove(circles)
+                            circles = []
                         command = ""
                         inTextBox = False
                 if not inTextBox:
@@ -295,7 +303,6 @@ while running:
         screen.blit(debugLiquidSim, (0, 210))
         screen.blit(debugTextWind, (0, 240))
         screen.blit(debugTextParticleCount, (0, 270))
-
 
     pygame.display.flip()  # draw everything
     clock.tick(60)  # limit fps :)
