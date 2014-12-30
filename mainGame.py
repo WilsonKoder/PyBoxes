@@ -4,8 +4,9 @@ __author__ = 'Wilson Koder'
 # Inspired by Boxes ;)
 # In real life I can't wink.
 
-import imp
-import importlib
+# This now features an ingame python shell, its buggy at the moment and allows you to pretty much hack the game
+# this is because it uses the exec() function, which allows for any code to be executed (assuming it's valid python)
+
 import pymunk
 import pygame
 import pygame.gfxdraw
@@ -20,7 +21,7 @@ green = 0, 255, 0
 blue = 0, 0, 255
 yellow = 255, 255, 0
 
-allowedKeys = "abcdefghijklmnopqrstuvwxyz=\"\'1234567890()-"
+allowedKeys = "abcdefghijklmnopqrstuvwxyz=\"\'12345678( )-"
 
 pygame.init()
 window_size = (800, 600)
@@ -80,6 +81,7 @@ circles = []
 
 inTextBox = False
 command = ""
+shiftKeyDown = False
  
 arial = pygame.font.SysFont("Arial", 24)
  
@@ -88,7 +90,10 @@ while running:
         if event.type == pygame.QUIT:
             running = False  # if the user tries to quit the app, set running to false in order to exit the loop
  
-        if event.type == pygame.KEYDOWN:  # check for keyboard input
+        if event.type == pygame.KEYDOWN:
+            # check for keyboard input
+            shiftKeyDown = pygame.key.get_mods() & pygame.KMOD_SHIFT  # returns true if user is pressing shift
+
             if inTextBox and event.key != pygame.K_RETURN:
                 key = pygame.key.name(event.key)
                 if key == "backspace":
@@ -97,20 +102,34 @@ while running:
                     print("key not allowed")
                 else:
                     command += pygame.key.name(event.key)
+
+                if event.key == pygame.K_9:
+                    if shiftKeyDown:
+                        command += "("
+                    else:
+                        command += "9"
+
+                elif event.key == pygame.K_0:
+                    if shiftKeyDown:
+                        command += ")"
+                    else:
+                        command += "0"
             else:
                 if event.key == pygame.K_RETURN:
                     if inTextBox:
-                        try:
+                        try:  # catch any errors that the user has in their code.
                             if command != "clear":
                                 exec(command)
                             else:
                                 space.remove(circles)
                                 circles = []
-                        except NameError or ValueError:
-                            print("Sorry, that's not a command or you entered an incorrect value")
+                        except NameError or ValueError or SyntaxError:
+                            print("Sorry, that's not a command or you entered an incorrect value. ")
                         command = ""
                         inTextBox = False
+
                 if not inTextBox:
+
                     if event.key == pygame.K_p:
                         if not paused:
                             print("pausing")
@@ -186,10 +205,13 @@ while running:
                             debugging = False
                         else:
                             debugging = True
- 
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.KMOD_SHIFT:
+                shiftKeyDown = False
+
         if event.type == pygame.MOUSEBUTTONDOWN:  # check if the mouse is clicked
             pos = pygame.mouse.get_pos()
-
             if pos[0] > 600 and pos[1] < 50:
                 print("clicked in textbox")
                 inTextBox = True
