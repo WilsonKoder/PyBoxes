@@ -3,7 +3,9 @@ __author__ = 'Wilson Koder'
 # Created by Wilson Koder on the 23rd of October 2014
 # Inspired by Boxes ;)
 # In real life I can't wink.
- 
+
+import imp
+import importlib
 import pymunk
 import pygame
 import pygame.gfxdraw
@@ -18,7 +20,7 @@ green = 0, 255, 0
 blue = 0, 0, 255
 yellow = 255, 255, 0
 
-allowedKeys = "abcdefghijklmnopqrstuvwxyz=\"\'1234567890()"
+allowedKeys = "abcdefghijklmnopqrstuvwxyz=\"\'1234567890()-"
 
 pygame.init()
 window_size = (800, 600)
@@ -98,11 +100,14 @@ while running:
             else:
                 if event.key == pygame.K_RETURN:
                     if inTextBox:
-                        if command != "clear":
-                            exec(command)
-                        else:
-                            space.remove(circles)
-                            circles = []
+                        try:
+                            if command != "clear":
+                                exec(command)
+                            else:
+                                space.remove(circles)
+                                circles = []
+                        except NameError or ValueError:
+                            print("Sorry, that's not a command or you entered an incorrect value")
                         command = ""
                         inTextBox = False
                 if not inTextBox:
